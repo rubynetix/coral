@@ -8,5 +8,6 @@
 
 require 'cmd'
 
+puts
 shell = Cmd.new
 shell.cmd_loop
