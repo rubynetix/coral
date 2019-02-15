@@ -1,8 +1,9 @@
 require_relative 'shell_commands'
+require 'readline'
 
 # Ruby shell
 class Cmd
-  extend ShellCommands
+  include ShellCommands
 
   def initialize(prompt = 'coral> ',
                  welcome = 'Welcome to the Coral shell.')
@@ -30,28 +31,24 @@ class Cmd
     while (input = Readline.readline(@prompt, add_hist_true))
       next if input == ''
 
-      input = input.split(' ')
+      command = input.split(' ')[0]
 
-      if !(new_cmd = get_cmd input[0]).nil?
-        process_cmd new_cmd, (input.slice 1, -1)
+      if !(new_cmd = get_cmd command).nil?
+        process_cmd new_cmd, input
       else
-        handle_unknown_cmd input[0]
+        handle_unknown_cmd command
       end
 
     end
     loop_finish
   end
 
-  def get_cmd(command)
-    self.class.instance_methods.select { |m| m.to_s.eql? 'do_' + command }[0]
-  end
-
   # Create child/worker process
   # Parent : wait for worker (child) to finish
   # Child: change job
   # Parent: report results
-  def process_cmd(command, *args)
-    send command, args
+  def process_cmd(command, input)
+    send command
   end
 
   def handle_unknown_cmd(input)
@@ -75,7 +72,7 @@ class Cmd
   def set_autocomplete
     comp = proc { |s| Dir.entries('.').grep(/^#{Regexp.escape(s)}/) }
 
-    Readline.completion_append_character = "\t"
+    Readline.completion_append_character = ' '
     Readline.completion_proc = comp
   end
 end
