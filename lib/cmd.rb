@@ -27,20 +27,21 @@ class Cmd
   def cmd_loop
     loop_setup
 
-    add_hist_true = true
-    while (input = Readline.readline(@prompt, add_hist_true))
+    while (input = Readline.readline(@prompt, add_hist: true))
       next if input == ''
 
-      command = input.split(' ')[0]
-
-      if !(new_cmd = get_cmd command).nil?
-        process_cmd new_cmd, input
-      else
-        handle_unknown_cmd command
-      end
-
+      process_input input
     end
     loop_finish
+  end
+
+  def process_input(input)
+    command = input.split(' ')[0]
+    if !(new_cmd = get_cmd command).nil?
+      process_cmd new_cmd, input
+    else
+      handle_unknown_cmd command
+    end
   end
 
   # Create child/worker process
@@ -48,7 +49,7 @@ class Cmd
   # Child: change job
   # Parent: report results
   def process_cmd(command, input)
-    send command
+    send command, input
   end
 
   def handle_unknown_cmd(input)
