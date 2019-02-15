@@ -1,5 +1,9 @@
+require_relative 'shell_commands'
+
 # Ruby shell
 class Cmd
+  extend ShellCommands
+
   def initialize(prompt = 'coral> ',
                  welcome = 'Welcome to the Coral shell.')
     @prompt = prompt
@@ -47,9 +51,5 @@ class Cmd
     @history_index += 1
   end
 
-  def do_help; end
-
-  def do_cd; end
-
-  def do_exit; end
+  def help_help; end
 end

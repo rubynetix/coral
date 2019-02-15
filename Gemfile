@@ -5,7 +5,6 @@ ruby '2.5.3'
 gem 'rake'
 gem 'test-unit', require: false, group: :test
 
-
 # TODO: Extracting comments above methods (for help commands)
 # gem 'method_source'
 
