@@ -5,13 +5,19 @@ module ShellCommands
     self.class.instance_methods.select { |m| m.to_s.eql? 'do_' + command }[0]
   end
 
-  def help_help; end
+  def help_help
+    puts docs 'help'
+    puts 'Available commands are:'
+    self.class.instance_methods.each do |m|
+      puts "\t" + m.to_s.gsub('do_', '') if m.to_s.start_with? 'do_'
+    end
+  end
 
-  # Test method source
+  # Use help <command> to get command use information
   def do_help(input = 'help')
     input = input.strip
     command = input.split(' ')[1]
-    return puts docs input if (input.eql? 'help') || command.nil?
+    return help_help if (input.eql? 'help') || command.nil?
 
     cmd_docs = docs command
     if cmd_docs.nil?
