@@ -6,7 +6,7 @@
 #   - Tim Tran
 #
 
-require 'cmd'
+require_relative 'lib/cmd'
 
 puts
 shell = Cmd.new

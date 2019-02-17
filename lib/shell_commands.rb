@@ -1,4 +1,7 @@
 require 'method_source'
+
+require_relative 'commands/ls_command'
+
 # Basic Commands for a Ruby Shell
 module ShellCommands
   def get_cmd(command)
@@ -31,7 +34,9 @@ module ShellCommands
 
   def do_exit(input); end
 
-  def do_ls(input); end
+  def do_ls(input)
+    LsCommand.new(input).execute
+  end
 
   def do_mv(input); end
 
