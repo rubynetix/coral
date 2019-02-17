@@ -48,7 +48,12 @@ class Cmd
   # Child: change job
   # Parent: report results
   def process_cmd(command, input)
-    send command, input
+    cmd_pid = fork do
+      send command, input
+      exit
+    end
+
+    Process.waitpid(cmd_pid)
   end
 
   def handle_unknown_cmd(input)

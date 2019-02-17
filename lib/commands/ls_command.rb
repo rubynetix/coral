@@ -13,16 +13,14 @@ class LsCommand
     end
 
     @opts.arguments.shift
-    @pos_args = @opts.arguments
-
-    raise NotEnoughArgumentsError unless @pos_args.length >= 1
+    @dir = @opts.arguments.length > 0 ? @opts.arguments[0] : '.'
   end
 
   def execute
     begin
-      files = Dir.entries(@opts.arguments[0])
-    rescue SystemCallError
-      $stderr.print "Error: " + $!
+      files = Dir.entries(@dir)
+    rescue SystemCallError => e
+      $stderr.print "#{e.message}\n"
       return
     end
 
@@ -30,10 +28,10 @@ class LsCommand
       files.select! { |f| not f.start_with?('.') }
     end
 
-    old_dir = Dir.pwd
-    Dir.chdir(@opts.arguments[0])
+    orig_dir = Dir.pwd
+    Dir.chdir(@dir)
     print_files(files)
-    Dir.chdir(old_dir)
+    Dir.chdir(orig_dir)
   end
 
   private
