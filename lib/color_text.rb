@@ -1,4 +1,5 @@
 class ColorText
+  RED = 31
   GREEN = 32
   BLUE = 34
 
@@ -9,6 +10,10 @@ class ColorText
 
     def blue(text, bold: true)
       colorize(text, BLUE)
+    end
+
+    def red(text, bold: true)
+      colorize(text, RED)
     end
 
     private
