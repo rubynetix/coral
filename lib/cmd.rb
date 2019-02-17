@@ -1,13 +1,12 @@
 require_relative 'shell_commands'
+require_relative 'color_text'
 require 'readline'
 
 # Ruby shell
 class Cmd
   include ShellCommands
 
-  def initialize(prompt = 'coral> ',
-                 welcome = 'Welcome to the Coral shell.')
-    @prompt = prompt
+  def initialize(welcome = 'Welcome to the Coral shell.')
     @welcome = welcome
     @history_index = -1
 
@@ -27,7 +26,7 @@ class Cmd
   def cmd_loop
     loop_setup
 
-    while (input = Readline.readline(@prompt, add_hist: true))
+    while (input = Readline.readline(prompt, add_hist: true))
       next if input == ''
 
       process_input input
@@ -83,5 +82,12 @@ class Cmd
 
     Readline.completion_append_character = ' '
     Readline.completion_proc = comp
+  end
+
+  def prompt
+    ColorText::green("#{ENV['USER']}@coral") +
+        ':' +
+        ColorText::blue("#{Dir.pwd}") +
+        '$ '
   end
 end
