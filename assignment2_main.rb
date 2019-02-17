@@ -7,7 +7,11 @@
 #
 
 require_relative 'lib/cmd'
+require_relative 'lib/readers/stdin_reader'
+require_relative 'lib/readers/list_reader'
 
 puts
-shell = Cmd.new
+# c = ["ls -a", "mkdir -h", "mkdir ff", "ls"]
+# shell = Cmd.new(ListReader.new(c))
+shell = Cmd.new(StdinReader.new)
 shell.cmd_loop
