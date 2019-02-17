@@ -59,12 +59,20 @@ class Cmd
   def prev_hist
     return unless @history_index.positive?
 
+    while Readline::HISTORY[@history_index].to_s == ""
+      @history_index -= 1
+    end
+
     puts Readline::HISTORY[@history_index].to_s
     @history_index -= 1
   end
 
   def next_hist
     return unless @history_index < Readline::HISTORY.size
+
+    while Readline::HISTORY[@history_index].to_s == ""
+      @history_index += 1
+    end
 
     puts Readline::HISTORY[@history_index].to_s
     @history_index += 1
