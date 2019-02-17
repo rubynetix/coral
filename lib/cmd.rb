@@ -6,15 +6,11 @@ require 'readline'
 class Cmd
   include ShellCommands
 
-  def initialize(welcome = 'Welcome to the Coral shell.')
+  def initialize(reader, welcome = 'Welcome to the Coral shell.')
     @welcome = welcome
-    @history_index = -1
+    @reader = reader
 
-    init_reader
-  end
-
-  def init_reader
-    set_autocomplete
+    @reader.prepare
   end
 
   def loop_setup
@@ -26,7 +22,7 @@ class Cmd
   def cmd_loop
     loop_setup
 
-    while (input = Readline.readline(prompt, add_hist: true))
+    while (input = @reader.read(prompt))
       next if input == ''
 
       process_input input
@@ -58,35 +54,6 @@ class Cmd
 
   def handle_unknown_cmd(input)
     puts 'Invalid command: ' + input
-  end
-
-  def prev_hist
-    return unless @history_index.positive?
-
-    while Readline::HISTORY[@history_index].to_s == ""
-      @history_index -= 1
-    end
-
-    puts Readline::HISTORY[@history_index].to_s
-    @history_index -= 1
-  end
-
-  def next_hist
-    return unless @history_index < Readline::HISTORY.size
-
-    while Readline::HISTORY[@history_index].to_s == ""
-      @history_index += 1
-    end
-
-    puts Readline::HISTORY[@history_index].to_s
-    @history_index += 1
-  end
-
-  def set_autocomplete
-    comp = proc { |s| Dir.entries('.').grep(/^#{Regexp.escape(s)}/) }
-
-    Readline.completion_append_character = ' '
-    Readline.completion_proc = comp
   end
 
   def prompt
