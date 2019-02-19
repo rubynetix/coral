@@ -1,19 +1,17 @@
 require_relative 'shell_commands'
+require_relative 'color_text'
+require 'readline'
 
 # Ruby shell
 class Cmd
-  extend ShellCommands
+  include ShellCommands
 
-  def initialize(prompt = 'coral> ',
-                 welcome = 'Welcome to the Coral shell.')
-    @prompt = prompt
+  def initialize(reader, welcome = 'Welcome to the Coral shell.')
     @welcome = welcome
-    @history_index = -1
+    @reader = reader
 
-    init_reader
+    @reader.prepare
   end
-
-  def init_reader; end
 
   def loop_setup
     puts @welcome
@@ -24,32 +22,44 @@ class Cmd
   def cmd_loop
     loop_setup
 
-    add_hist_true = true
-    while (input = Readline.readline(@prompt, add_hist_true))
+    while (input = @reader.read(prompt))
       next if input == ''
 
-      process_cmd
+      process_input input
     end
     loop_finish
   end
 
-  def process_cmd; end
-
-  def handle_unknown_cmd; end
-
-  def prev_hist
-    return unless @history_index.positive?
-
-    puts Readline::HISTORY[@history_index].to_s
-    @history_index -= 1
+  def process_input(input)
+    command = input.split(' ')[0]
+    if !(new_cmd = get_cmd command).nil?
+      process_cmd new_cmd, input
+    else
+      handle_unknown_cmd command
+    end
   end
 
-  def next_hist
-    return unless @history_index < Readline::HISTORY.size
+  # Create child/worker process
+  # Parent : wait for worker (child) to finish
+  # Child: change job
+  # Parent: report results
+  def process_cmd(command, input)
+    cmd_pid = fork do
+      send command, input
+      exit
+    end
 
-    puts Readline::HISTORY[@history_index].to_s
-    @history_index += 1
+    Process.waitpid(cmd_pid)
   end
 
-  def help_help; end
+  def handle_unknown_cmd(input)
+    puts 'Invalid command: ' + input
+  end
+
+  def prompt
+    ColorText::red("#{ENV['USER']}@coral") +
+        ':' +
+        ColorText::blue("#{Dir.pwd}") +
+        '$ '
+  end
 end

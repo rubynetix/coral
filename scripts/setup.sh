@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 install_gem() {
-    if [[ -z $(gem list "^$1$" -i) ]]; then
-        echo "Installing gem $1"
-        sudo gem install $1
-    fi
+    echo "Installing gem $1"
+    gem install $1 --quiet --no-document
 }
 
 gem update --system
-gem install bundler
+install_gem bundler
+install_gem slop
+
 bundler install
