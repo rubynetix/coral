@@ -9,6 +9,6 @@ class DateCommand
   end
 
   def execute
-    puts Time.new
+    puts Time.now.strftime('%a %b %d %T %Z %Y')
   end
 end
