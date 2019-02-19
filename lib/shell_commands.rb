@@ -2,6 +2,7 @@ require 'method_source'
 
 require_relative 'commands/ls_command'
 require_relative 'commands/mkdir_command'
+require_relative 'commands/rm_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -45,6 +46,10 @@ module ShellCommands
 
   def do_mkdir(input)
     MkdirCommand.new(input).execute
+  end
+
+  def do_rm(input)
+    RmCommand.new(input).execute
   end
 
   def do_touch(input); end
