@@ -59,6 +59,7 @@ module ShellCommands
 
   def do_cat(input); end
 
+  # Display the local date and time (e.g. Sat Nov 04 12:02:33 EST 1989)
   def do_date(input)
     DateCommand.new.execute
   end
