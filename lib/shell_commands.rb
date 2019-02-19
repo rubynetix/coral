@@ -3,6 +3,7 @@ require 'method_source'
 require_relative 'commands/ls_command'
 require_relative 'commands/mkdir_command'
 require_relative 'commands/rm_command'
+require_relative 'commands/date_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -58,7 +59,9 @@ module ShellCommands
 
   def do_cat(input); end
 
-  def do_date(input); end
+  def do_date(input)
+    DateCommand.new.execute
+  end
 
   def docs(command_name)
     return if command_name.nil?
