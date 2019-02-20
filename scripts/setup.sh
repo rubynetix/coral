@@ -8,5 +8,6 @@ install_gem() {
 gem update --system
 install_gem bundler
 install_gem slop
+install_gem rake
 
 bundler install
