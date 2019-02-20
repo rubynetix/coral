@@ -1,5 +1,6 @@
 require 'slop'
 require_relative 'base_command'
+require_relative '../color_text'
 
 class LsCommand
   include BaseCommand
