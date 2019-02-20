@@ -12,9 +12,9 @@ class FileCommandTest < Test::Unit::TestCase
   def initialize(*args)
     super(*args)
 
-    @sandbox_dir = File.absolute_path('file_sandbox')
+    @sandbox_dir = File.expand_path("../file_sandbox", __FILE__)
 
-    @@test_dir = File.absolute_path("test_dir_" + SecureRandom.hex(6))
+    @@test_dir = File.expand_path("../test_dir_#{SecureRandom.hex(6)}", __FILE__)
     @@test_dir.freeze
 
     create_sandbox
@@ -34,6 +34,7 @@ class FileCommandTest < Test::Unit::TestCase
   end
 
   def create_sandbox
+    puts "cp -rf #{@sandbox_dir} #{@@test_dir}"
     %x(cp -rf #{@sandbox_dir} #{@@test_dir})
   end
 
