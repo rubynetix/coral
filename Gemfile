@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 ruby '2.5.3'
 
 # Testing
-gem 'rake'
 gem 'test-unit', require: false, group: :test
+gem 'rake', group: :test
 
 # Extracting comments above methods (for help commands)
 gem 'method_source'

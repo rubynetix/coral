@@ -78,7 +78,7 @@ class FileCommandTest < Test::Unit::TestCase
     cmds.zip(exp_files) do |cmd, e_files|
       # Preconditions
       begin
-        assert_true(cmd.start_with?('ls '))
+        assert_true(cmd.start_with?('ls'))
       end
 
       $stdout.reopen
