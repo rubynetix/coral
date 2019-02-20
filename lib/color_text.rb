@@ -28,7 +28,7 @@ class ColorText
     private
 
     def colorize(text, color_code, bold: true)
-      "\e[#{bold ? "1;" : ''}#{color_code}m#{text}\e[0m"
+      "\e[#{bold ? '1;' : ''}#{color_code}m#{text}\e[0m"
     end
   end
 end

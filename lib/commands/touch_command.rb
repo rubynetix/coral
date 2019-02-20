@@ -5,9 +5,9 @@ require_relative 'base_command'
 class TouchCommand
   include BaseCommand
 
-  USAGE = <<~EOS
+  USAGE = <<~EOS.freeze
     Usage: touch [file]
-      Update the access and modification times of [file]. 
+      Update the access and modification times of [file].
 
       If [file] does not exist, it will be created.
 
@@ -22,7 +22,7 @@ class TouchCommand
 
   def execute
     if @opts.help? || @file.nil?
-      puts @opts.to_s(prefix: "  ")
+      puts @opts.to_s(prefix: '  ')
       return
     end
 

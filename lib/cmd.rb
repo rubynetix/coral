@@ -57,9 +57,9 @@ class Cmd
   end
 
   def prompt
-    ColorText::red("#{ENV['USER']}@coral") +
-        ':' +
-        ColorText::blue("#{Dir.pwd}") +
-        '$ '
+    ColorText.red("#{ENV['USER']}@coral") +
+      ':' +
+      ColorText.blue(Dir.pwd.to_s) +
+      '$ '
   end
 end

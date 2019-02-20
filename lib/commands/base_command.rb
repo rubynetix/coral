@@ -2,7 +2,6 @@ class NotEnoughArgumentsError < StandardError
 end
 
 module BaseCommand
-
   def parse_default_opts(input)
     args = split_args input
     opts = Slop.parse args do |o|
