@@ -4,6 +4,7 @@ require_relative 'commands/ls_command'
 require_relative 'commands/mkdir_command'
 require_relative 'commands/rm_command'
 require_relative 'commands/mv_command'
+require_relative 'commands/cp_command'
 require_relative 'commands/touch_command'
 require_relative 'commands/date_command'
 
@@ -15,7 +16,6 @@ module ShellCommands
 
   def help_help
     puts docs 'help'
-    puts 'Available commands are:'
     self.class.instance_methods.each do |m|
       puts "\t" + m.to_s.gsub('do_', '') if m.to_s.start_with? 'do_'
     end
@@ -45,6 +45,10 @@ module ShellCommands
 
   def do_mv(input)
     MvCommand.new(input).execute
+  end
+
+  def do_cp(input)
+    CpCommand.new(input).execute
   end
 
   def do_mkdir(input)
