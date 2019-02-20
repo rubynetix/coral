@@ -6,20 +6,15 @@ class CatCommand
   include BaseCommand
 
   USAGE = <<~EOS
-    Usage: cat [filenames]
-      Concatenates files to standard output.
+    Usage: cat [FILES]...
+      Concatenates FILES to standard output.
 
       [options]
   EOS
 
   def initialize(input)
-    args = split_args input
-    @opts = Slop.parse args do |o|
-      o.bool '-h', '--help'
-    end
-
+    @opts = parse_default_opts(input)
     @opts.options.banner = USAGE
-    @opts.arguments.shift
     @files = @opts.arguments.length > 0 ? @opts.arguments : nil
   end
 
