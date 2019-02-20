@@ -69,7 +69,7 @@ module ShellCommands
 
   # Display the local date and time (e.g. Sat Nov 04 12:02:33 EST 1989)
   def do_date(input)
-    DateCommand.new.execute
+    DateCommand.new(input).execute
   end
 
   def docs(command_name)
