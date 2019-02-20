@@ -1,5 +1,4 @@
 class ListReader
-
   def initialize(cmd_list)
     @cmds = cmd_list
     @cmd_idx = 0

@@ -5,7 +5,7 @@ require_relative '../color_text'
 class LsCommand
   include BaseCommand
 
-  SEP = '  '
+  SEP = '  '.freeze
 
   def initialize(input)
     args = split_args input
@@ -14,7 +14,7 @@ class LsCommand
     end
 
     @opts.arguments.shift
-    @dir = @opts.arguments.length > 0 ? @opts.arguments[0] : '.'
+    @dir = !@opts.arguments.empty? ? @opts.arguments[0] : '.'
   end
 
   def execute
@@ -25,9 +25,7 @@ class LsCommand
       return
     end
 
-    unless @opts.all?
-      files.select! { |f| not f.start_with?('.') }
-    end
+    files.select! { |f| f.start_with?('.') } unless @opts.all?
 
     orig_dir = Dir.pwd
     Dir.chdir(@dir)
