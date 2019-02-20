@@ -7,6 +7,7 @@ require_relative 'commands/mv_command'
 require_relative 'commands/cp_command'
 require_relative 'commands/touch_command'
 require_relative 'commands/date_command'
+require_relative 'commands/cat_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -65,11 +66,14 @@ module ShellCommands
 
   def do_echo(input); end
 
-  def do_cat(input); end
+  # Concatenate file(s) to standard output
+  def do_cat(input)
+    CatCommand.new(input).execute
+  end
 
   # Display the local date and time (e.g. Sat Nov 04 12:02:33 EST 1989)
   def do_date(input)
-    DateCommand.new.execute
+    DateCommand.new(input).execute
   end
 
   def docs(command_name)
