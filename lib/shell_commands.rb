@@ -67,7 +67,13 @@ module ShellCommands
   def do_echo(input); end
 
   def do_cat(input)
-    CatCommand.new(input).execute
+    begin
+      CatCommand.new(input).execute
+    rescue IOError => e
+      $stderr.print "#{e.message}\n"
+    rescue SystemCallError => e
+      $stderr.print "#{e.message}\n"
+    end
   end
 
   # Display the local date and time (e.g. Sat Nov 04 12:02:33 EST 1989)
