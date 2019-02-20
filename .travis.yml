@@ -8,7 +8,6 @@ notifications:
 rvm: 2.5.3
 
 stages:
-  - lint
   - test
 
 jobs:
@@ -17,4 +16,4 @@ jobs:
       before_install:
         - ./scripts/setup.sh
       script:
-        - bundle exec rake
+        - find test -name '*_test.rb' | xargs -n1 -I{} ruby -Itest {}
