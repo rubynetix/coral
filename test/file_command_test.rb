@@ -34,11 +34,11 @@ class FileCommandTest < Test::Unit::TestCase
   end
 
   def create_sandbox
-    puts "cp -rf #{@sandbox_dir} #{@@test_dir}"
     %x(cp -rf #{@sandbox_dir} #{@@test_dir})
   end
 
   def self.delete(id)
+    # Delete the test directory after the tests are over
     %x(rm -rf #{@@test_dir})
   end
 
@@ -78,6 +78,7 @@ class FileCommandTest < Test::Unit::TestCase
     cmds.zip(exp_files) do |cmd, e_files|
       # Preconditions
       begin
+        assert_true(cmd.start_with?('ls '))
       end
 
       $stdout.reopen
