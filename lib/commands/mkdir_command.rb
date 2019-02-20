@@ -13,14 +13,9 @@ class MkdirCommand
   EOS
 
   def initialize(input)
-    args = split_args input
-    @opts = Slop.parse args do |o|
-      o.bool '-h', '--help'
-    end
-
+    @opts = parse_default_opts(input)
     @opts.options.banner = USAGE
-    @opts.arguments.shift
-    @dir = @opts.arguments.length > 0 ? @opts.arguments[0] : nil
+    @dir = @opts.arguments[0]
   end
 
   def execute
