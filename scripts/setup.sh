@@ -9,6 +9,5 @@ gem update --system
 install_gem bundler
 install_gem slop
 install_gem rake
-install_gem rubocop
 
 bundler install

@@ -13,11 +13,6 @@ stages:
 
 jobs:
   include:
-    - stage: lint
-      before_install:
-        - ./scripts/setup.sh
-      script:
-        - rubocop
     - stage: test
       before_install:
         - ./scripts/setup.sh
