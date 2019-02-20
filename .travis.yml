@@ -15,7 +15,6 @@ jobs:
   include:
     - stage: lint
       before_install:
-        - gem install rubocop
         - ./scripts/setup.sh
       script:
         - rubocop
