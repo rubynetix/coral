@@ -2,24 +2,16 @@ language: ruby
 sudo: false
 dist: trusty
 
-notifications:
-  email: false
-
 rvm: 2.5.3
 
 stages:
-  - lint
+  - build
   - test
 
 jobs:
   include:
-    - stage: lint
-      before_install:
-        - gem install rubocop
-      script:
-        - rubocop
     - stage: test
       before_install:
         - ./scripts/setup.sh
       script:
-        - bundle exec rake
+        - find test -name '*_test.rb' | xargs -n1 -I{} ruby -Itest {}
