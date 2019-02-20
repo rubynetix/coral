@@ -1,5 +1,3 @@
-require 'rake'
-
 Gem::Specification.new do |s|
   s.name = 'coral'
   s.version = '0.0.0'
@@ -9,7 +7,4 @@ Gem::Specification.new do |s|
   s.authors = ['Ryan Furrer']
   s.email = 'rfurrer@ualberta.ca'
   s.homepage = 'https://github.com/rubynetix/coral'
-
-  s.files = FileList['lib/*.rb'].to_a
-  s.test_files = FileList['test/*_test.rb'].to_a
 end
