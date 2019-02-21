@@ -36,6 +36,11 @@ module ShellCommands
     puts cmd_docs
   end
 
+  def do_clear(input_tokens)
+    # ANSI sequence wont work with RubyMine console but will work with others (eg Ubuntu)
+    puts "\e[H\e[2J"
+  end
+
   def do_cd(input_tokens); end
 
   def do_exit(input_tokens); end
