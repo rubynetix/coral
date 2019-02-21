@@ -12,8 +12,7 @@ class CpCommand
     [options]
   EOS
 
-  def initialize(input)
-    args = split_args input
+  def initialize(args)
     @opts = Slop.parse args do |o|
       o.bool '-r', '--recursive', 'Remove directories and their contents.'
       o.bool '-v', '--verbose', 'Display verbose print messages'

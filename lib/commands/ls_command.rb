@@ -7,8 +7,7 @@ class LsCommand
 
   SEP = '  '.freeze
 
-  def initialize(input)
-    args = split_args input
+  def initialize(args)
     @opts = Slop.parse args do |o|
       o.bool '-a', '--all', 'display all files'
     end
