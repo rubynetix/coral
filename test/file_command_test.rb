@@ -2,6 +2,7 @@ require 'test/unit'
 require 'securerandom'
 require_relative '../lib/commands/ls_command'
 require_relative '../lib/commands/cd_command'
+require_relative '../lib/commands/cat_command'
 require_relative '../lib/color_text'
 
 class FileCommandTest < Test::Unit::TestCase
@@ -37,6 +38,14 @@ class FileCommandTest < Test::Unit::TestCase
     puts "Deleting #{test_dir}"
     # Delete the test directory after the tests are over
     `rm -rf #{test_dir}`
+  end
+
+  def valid_dir(path)
+    path.nil? ? true : Dir.exists?(File.expand_path(path))
+  end
+
+  def valid_file(path)
+    path.nil? ? true : File.exists?(File.expand_path(path))
   end
 
   ###### TESTING ######
@@ -104,7 +113,6 @@ class FileCommandTest < Test::Unit::TestCase
     cmd_exps.each do |cmd, e_dir|
       Dir.chdir(@test_dir)
       tokens = cmd.strip.split(' ')
-      valid_dir = tokens[1].nil? ? true : Dir.exists?(File.expand_path(tokens[1]))
 
       # Preconditions
       begin
@@ -116,10 +124,42 @@ class FileCommandTest < Test::Unit::TestCase
 
       # Postconditions
       begin
-        assert_equal(e_dir, Dir.pwd, "cd: navigated to unexpected directory")
+        assert_equal(e_dir, Dir.pwd, "cd: Navigated to unexpected directory")
 
-        unless valid_dir
+        unless valid_dir(tokens[1])
           assert_false($stderr.string.empty?, "cd: Invalid directory should print message to stderr")
+        end
+      end
+    end
+  end
+
+  def test_cat
+    cmd_contents = [
+        ['cat', nil],  # Missing argument
+        ['cat .hidden_file', "This is a hidden file.\n"],
+        ['cat RandomText.txt', "I rEaLLY dont KOW how tO Spell Or FoRMat thinGs\nSpecial chars: /*-+\n"],
+        ['cat .', nil], # Not a file
+    ]
+
+    cmd_contents.each do |cmd, contents|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('cat', tokens[0])
+      end
+
+      $stdout.reopen
+      CatCommand.new(tokens).execute
+
+      # Postconditions
+      begin
+        unless contents.nil?
+          assert_equal(contents, $stdout.string, "cat: Incorrect file contents")
+        end
+
+        unless valid_file(tokens[1])
+          assert_false($stderr.string.empty?, "cat: Invalid file path should print to stderr")
         end
       end
     end
