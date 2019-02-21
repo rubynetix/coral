@@ -4,7 +4,7 @@ require_relative 'base_command'
 class DateCommand
   include BaseCommand
 
-  USAGE = <<~EOS
+  USAGE = <<~EOS.freeze
     Usage: date
       Displays the date in the format (Day Month DD HH:MM:SS Timezone YYYY)
 
@@ -18,7 +18,7 @@ class DateCommand
 
   def execute
     if @opts.help?
-      puts @opts.to_s(prefix: "  ")
+      puts @opts.to_s(prefix: '  ')
       return
     end
 

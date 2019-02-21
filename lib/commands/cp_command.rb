@@ -5,7 +5,7 @@ require_relative 'base_command'
 class CpCommand
   include BaseCommand
 
-  USAGE = <<~EOS
+  USAGE = <<~EOS.freeze
     Usage: cp [source] [dest]
       Copy file from [source] to [dest]
 
@@ -14,8 +14,8 @@ class CpCommand
 
   def initialize(args)
     @opts = Slop.parse args do |o|
-      o.bool '-r', '--recursive', "Remove directories and their contents."
-      o.bool '-v', '--verbose', "Display verbose print messages"
+      o.bool '-r', '--recursive', 'Remove directories and their contents.'
+      o.bool '-v', '--verbose', 'Display verbose print messages'
       o.bool '-h', '--help'
     end
 
@@ -26,7 +26,7 @@ class CpCommand
 
   def execute
     if @opts.help? || @src.nil? || @dst.nil?
-      puts @opts.to_s(prefix: "  ")
+      puts @opts.to_s(prefix: '  ')
       return
     end
 
@@ -39,6 +39,5 @@ class CpCommand
     rescue SystemCallError => e
       $stderr.print "#{e.message}\n"
     end
-
   end
 end
