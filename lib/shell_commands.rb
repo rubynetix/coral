@@ -23,57 +23,57 @@ module ShellCommands
   end
 
   # Use help <command> to get command use information
-  def do_help(input = 'help')
-    input = input.strip
-    command = input.split(' ')[1]
-    return help_help if (input.eql? 'help') || command.nil?
+  def do_help(input_tokens = 'help')
+    input_tokens = input_tokens.strip
+    command = input_tokens.split(' ')[1]
+    return help_help if (input_tokens.eql? 'help') || command.nil?
 
     cmd_docs = docs command
     if cmd_docs.nil?
       puts 'No docs for: ' + command
-      cmd_docs = docs input
+      cmd_docs = docs input_tokens.join(" ")
     end
     puts cmd_docs
   end
 
-  def do_cd(input); end
+  def do_cd(input_tokens); end
 
-  def do_exit(input); end
+  def do_exit(input_tokens); end
 
-  def do_ls(input)
-    LsCommand.new(input).execute
+  def do_ls(input_tokens)
+    LsCommand.new(input_tokens).execute
   end
 
-  def do_mv(input)
-    MvCommand.new(input).execute
+  def do_mv(input_tokens)
+    MvCommand.new(input_tokens).execute
   end
 
-  def do_cp(input)
-    CpCommand.new(input).execute
+  def do_cp(input_tokens)
+    CpCommand.new(input_tokens).execute
   end
 
-  def do_mkdir(input)
-    MkdirCommand.new(input).execute
+  def do_mkdir(input_tokens)
+    MkdirCommand.new(input_tokens).execute
   end
 
-  def do_rm(input)
-    RmCommand.new(input).execute
+  def do_rm(input_tokens)
+    RmCommand.new(input_tokens).execute
   end
 
-  def do_touch(input)
-    TouchCommand.new(input).execute
+  def do_touch(input_tokens)
+    TouchCommand.new(input_tokens).execute
   end
 
-  def do_echo(input); end
+  def do_echo(input_tokens); end
 
   # Concatenate file(s) to standard output
-  def do_cat(input)
-    CatCommand.new(input).execute
+  def do_cat(input_tokens)
+    CatCommand.new(input_tokens).execute
   end
 
   # Display the local date and time (e.g. Sat Nov 04 12:02:33 EST 1989)
-  def do_date(input)
-    DateCommand.new(input).execute
+  def do_date(input_tokens)
+    DateCommand.new(input_tokens).execute
   end
 
   def docs(command_name)

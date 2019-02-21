@@ -36,21 +36,21 @@ class Cmd
   end
 
   def process_input(input)
-    input_tokens = input.split(' ')
-    command = input_tokens[0]
-    if input_tokens.include?(">")
-      begin
-      input = redirect_stdout(input_tokens)
-      rescue IOError => e
-        $stderr.print "#{e.message}\n"
-        return
+    begin
+      input_tokens = input.strip.split(' ')
+      command = input_tokens[0]
+      if input_tokens.include?(">")
+        input_tokens = redirect_stdout(input_tokens)
       end
-    end
 
-    if !(new_cmd = get_cmd command).nil?
-      process_cmd new_cmd, input
-    else
-      handle_unknown_cmd command
+      if !(new_cmd = get_cmd command).nil?
+        process_cmd new_cmd, input_tokens
+      else
+        handle_unknown_cmd command
+      end
+    rescue IOError => e
+      $stderr.print "#{e.message}\n"
+      return
     end
   end
 
@@ -58,33 +58,32 @@ class Cmd
   # Parent : wait for worker (child) to finish
   # Child: change job
   # Parent: report results
-  def process_cmd(command, input)
+  def process_cmd(command, input_tokens)
     cmd_pid = fork do
-      send command, input
+      send command, input_tokens
       exit
     end
 
     Process.waitpid(cmd_pid)
   end
 
-
   def handle_unknown_cmd(input)
     puts 'Invalid command: ' + input
   end
 
-  def redirect_stdout(input)
-    arrow_idx = input.index(">")
+  def redirect_stdout(input_tokens)
+    arrow_idx = input_tokens.index(">")
     if arrow_idx + 1 >= input.length
       raise IOError, "Unexpected stdout redirection: nil"
     end
 
-    outfile = input[arrow_idx + 1]
+    outfile = input_tokens[arrow_idx + 1]
     if File.directory?(outfile)
       raise IOError, "Unexpected stdout redirection: #{outfile} is a directory"
     end
 
     $stdout = $stdout.reopen(outfile, "w")
-    remove_array_indexes(input, Set[arrow_idx, arrow_idx+1]).join(" ")
+    remove_array_indexes(input_tokens, Set[arrow_idx, arrow_idx+1])
   end
 
   def prompt
