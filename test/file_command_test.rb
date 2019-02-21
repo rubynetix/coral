@@ -81,7 +81,9 @@ class FileCommandTest < Test::Unit::TestCase
 
       $stdout.reopen
       $stderr.reopen
-      LsCommand.new(cmd).execute
+
+      tokens = cmd.strip.split(' ')
+      LsCommand.new(tokens).execute
 
       # Postconditions
       begin
