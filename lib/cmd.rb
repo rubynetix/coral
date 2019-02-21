@@ -67,13 +67,13 @@ class Cmd
     Process.waitpid(cmd_pid)
   end
 
-  def handle_unknown_cmd(input)
-    puts 'Invalid command: ' + input
+  def handle_unknown_cmd(command)
+    puts 'Invalid command: ' + command
   end
 
   def redirect_stdout(input_tokens)
     arrow_idx = input_tokens.index(">")
-    if arrow_idx + 1 >= input.length
+    if arrow_idx + 1 >= input_tokens.length
       raise IOError, "Unexpected stdout redirection: nil"
     end
 
