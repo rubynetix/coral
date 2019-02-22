@@ -172,8 +172,8 @@ class FileCommandTest < Test::Unit::TestCase
         ['cp .hidden_file', nil ],
         ['cp invalid_file subdir/new_file', nil],
         ['cp .hidden_file .hidden_file_copy', "#{@test_dir}/.hidden_file_copy" ],
-        ['cp RandomText.txt subdir/RandomTextSubdir.txt', "#{@test_dir}/subdir/RandomTextSubdir.txt" ]
-        #['cp subdir/hello.txt .', "#{@test_dir}/hello.txt"]
+        ['cp RandomText.txt subdir/RandomTextSubdir.txt', "#{@test_dir}/subdir/RandomTextSubdir.txt" ],
+        ['cp subdir/hello.txt .', "#{@test_dir}/hello.txt"]
     ]
 
     cp_exps.each do |cmd, expected_file|
