@@ -1,2 +1,2 @@
 require 'mkmf'
-create_makefile('timer')
+create_makefile('ctimer')
