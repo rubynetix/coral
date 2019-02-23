@@ -94,7 +94,7 @@ class FileCommandTest < Test::Unit::TestCase
                                  .reject { |f| f == '' }
                                  .map { |f| ColorText.rm_color(f) }
 
-          assert_false(printed_files.empty?, "ls: No files printed for non-empty directory")
+          assert_false(printed_files.empty?, "ls: No files printed for non-subdir2 directory")
           assert_equal(e_files, printed_files.sort, "ls: Incorrect files printed for \"#{cmd}\"")
 
           unless tokens.include?('-a') or tokens.include?('--all')
@@ -214,7 +214,7 @@ class FileCommandTest < Test::Unit::TestCase
     cp_r_exps = [
         ['cp -r subdir', nil ],
         ['cp -r subdir temp', "#{@test_dir}/temp" ],
-        ['cp -r subdir/hello.txt empty', "#{@test_dir}/empty" ]
+        ['cp -r subdir/hello.txt subdir2', "#{@test_dir}/subdir2" ]
     ]
 
     cp_r_exps.each do |cmd, expected_dir|
@@ -235,7 +235,7 @@ class FileCommandTest < Test::Unit::TestCase
 
           copy_source = File.expand_path("#{@test_dir}/#{tokens[2]}")
           if File.file?("#{@test_dir}/#{tokens[2]}")
-            source_files = [".", "..", File.basename(copy_source)]
+            source_files = [".", "..","empty_file.txt", File.basename(copy_source)]
           else
             source_files = Dir.entries(copy_source)
           end
