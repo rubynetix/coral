@@ -4,6 +4,8 @@ require_relative '../lib/commands/ls_command'
 require_relative '../lib/commands/cd_command'
 require_relative '../lib/commands/cat_command'
 require_relative '../lib/commands/cp_command'
+require_relative '../lib/commands/touch_command'
+require_relative '../lib/commands/rm_command'
 require_relative '../lib/color_text'
 require_relative '../lib/commands/clear_command'
 
@@ -54,8 +56,8 @@ class FileCommandTest < Test::Unit::TestCase
 
   def test_ls
     files = Dir.entries(@sandbox_dir).sort!
-    no_hidden_files = files.select { |f| f.start_with?('.') }
-    sub_files = Dir.entries("#{@sandbox_dir}/subdir").select { |f| f.start_with?('.') }.sort!
+    no_hidden_files = files.select { |f| !f.start_with?('.') }
+    sub_files = Dir.entries("#{@sandbox_dir}/subdir").select { |f| !f.start_with?('.') }.sort!
 
     cmds = [
       'ls',
@@ -93,7 +95,11 @@ class FileCommandTest < Test::Unit::TestCase
                                  .map { |f| ColorText.rm_color(f) }
 
           assert_false(printed_files.empty?, "ls: No files printed for non-empty directory")
-          assert_equal(e_files, printed_files.sort, "ls: Incorrect files printed")
+          assert_equal(e_files, printed_files.sort, "ls: Incorrect files printed for \"#{cmd}\"")
+
+          unless tokens.include?('-a') or tokens.include?('--all')
+            assert_false(printed_files.any? { |f| f.start_with?('.') }, "Ls does not print hidden files by default")
+          end
         else
           # We have printed something to stderr
           assert_false($stderr.string.empty?, "ls: Invalid directory should print message to stderr")
@@ -225,5 +231,25 @@ class FileCommandTest < Test::Unit::TestCase
 
       assert_equal("\e[H\e[2J\n", $stdout.string)
     end
+
+  def test_touch
+    random_file = "#{SecureRandom.hex(6)}.txt"
+    tokens = ['touch', random_file]
+
+    # Preconditions
+    begin
+      assert_equal('touch', tokens[0])
+    end
+
+    $stdout.reopen
+    TouchCommand.new(tokens).execute
+
+    # Postconditions
+    begin
+      assert_true(File.exists?(random_file))
+    end
+
+    RmCommand.new(['rm', random_file]).execute
+
   end
 end

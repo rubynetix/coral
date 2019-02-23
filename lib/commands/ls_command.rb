@@ -24,7 +24,7 @@ class LsCommand
       return
     end
 
-    files.select! { |f| f.start_with?('.') } unless @opts.all?
+    files.select! { |f| !f.start_with?('.') } unless @opts.all?
 
     orig_dir = Dir.pwd
     Dir.chdir(@dir)

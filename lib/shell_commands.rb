@@ -5,6 +5,7 @@ require_relative 'commands/mkdir_command'
 require_relative 'commands/rm_command'
 require_relative 'commands/mv_command'
 require_relative 'commands/cp_command'
+require_relative 'commands/cd_command'
 require_relative 'commands/touch_command'
 require_relative 'commands/date_command'
 require_relative 'commands/cat_command'
@@ -37,48 +38,75 @@ module ShellCommands
     puts cmd_docs
   end
 
+  def exec_as_child
+    cmd_pid = fork do
+      yield
+      exit
+    end
+
+    Process.waitpid(cmd_pid)
+  end
+
   def do_clear(input_tokens)
     ClearCommand.new(input_tokens).execute
   end
 
-  def do_cd(input_tokens); end
+  def do_cd(input_tokens)
+    CdCommand.new(input_tokens).execute
+  end
 
   def do_exit(input_tokens); end
 
   def do_ls(input_tokens)
-    LsCommand.new(input_tokens).execute
+    exec_as_child do
+      LsCommand.new(input_tokens).execute
+    end
   end
 
   def do_mv(input_tokens)
-    MvCommand.new(input_tokens).execute
+    exec_as_child do
+      MvCommand.new(input_tokens).execute
+    end
   end
 
   def do_cp(input_tokens)
-    CpCommand.new(input_tokens).execute
+    exec_as_child do
+      CpCommand.new(input_tokens).execute
+    end
   end
 
   def do_mkdir(input_tokens)
-    MkdirCommand.new(input_tokens).execute
+    exec_as_child do
+      MkdirCommand.new(input_tokens).execute
+    end
   end
 
   def do_rm(input_tokens)
-    RmCommand.new(input_tokens).execute
+    exec_as_child do
+      RmCommand.new(input_tokens).execute
+    end
   end
 
   def do_touch(input_tokens)
-    TouchCommand.new(input_tokens).execute
+    exec_as_child do
+      TouchCommand.new(input_tokens).execute
+    end
   end
 
   def do_echo(input_tokens); end
 
   # Concatenate file(s) to standard output
   def do_cat(input_tokens)
-    CatCommand.new(input_tokens).execute
+    exec_as_child do
+      CatCommand.new(input_tokens).execute
+    end
   end
 
   # Display the local date and time (e.g. Sat Nov 04 12:02:33 EST 1989)
   def do_date(input_tokens)
-    DateCommand.new(input_tokens).execute
+    exec_as_child do
+      DateCommand.new(input_tokens).execute
+    end
   end
 
   def docs(command_name)
