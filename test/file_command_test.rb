@@ -203,4 +203,27 @@ class FileCommandTest < Test::Unit::TestCase
       end
     end
   end
+
+  def test_clear
+    clear_exps = [
+        'clear',
+        'clear -h',
+        'clear random arguments'
+    ]
+
+    clear_exps.each do |cmd|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('clear', tokens[0])
+      end
+
+      $stdout.reopen
+
+      #Compare it to "" as the cursor should be placed at the start of the $stdout
+      assert_equal("", $stdout.string)
+
+    end
+  end
 end

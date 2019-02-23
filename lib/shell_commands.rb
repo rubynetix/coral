@@ -8,6 +8,7 @@ require_relative 'commands/cp_command'
 require_relative 'commands/touch_command'
 require_relative 'commands/date_command'
 require_relative 'commands/cat_command'
+require_relative 'commands/clear_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -37,8 +38,7 @@ module ShellCommands
   end
 
   def do_clear(input_tokens)
-    # ANSI sequence wont work with RubyMine console but will work with others (eg Ubuntu)
-    puts "\e[H\e[2J"
+    ClearCommand.new(input_tokens).execute
   end
 
   def do_cd(input_tokens); end
