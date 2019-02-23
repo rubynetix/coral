@@ -237,7 +237,7 @@ class FileCommandTest < Test::Unit::TestCase
     end
 
     # We deleted all files in the test directory
-    assert_equal(EMPTY_DIR, Dir.entries(@test_dir))
+    assert_equal(EMPTY_DIR, Dir.entries(@test_dir).sort!)
     create_sandbox # reset
   end
 
