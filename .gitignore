@@ -1,6 +1,7 @@
+lib/timer/ext/
+
 .idea/
 !.idea/dictionaries
-
 
 *.gem
 *.rbc

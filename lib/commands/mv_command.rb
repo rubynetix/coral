@@ -24,6 +24,10 @@ class MvCommand
       return
     end
 
-    FileUtils.mv(@src, @dst)
+    begin
+      FileUtils.mv(@src, @dst)
+    rescue SystemCallError => e
+      $stderr.print "#{e.message}\n"
+    end
   end
 end
