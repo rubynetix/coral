@@ -6,6 +6,7 @@ require_relative '../lib/commands/cat_command'
 require_relative '../lib/commands/cp_command'
 require_relative '../lib/commands/touch_command'
 require_relative '../lib/commands/rm_command'
+require_relative '../lib/commands/mv_command'
 require_relative '../lib/color_text'
 require_relative '../lib/commands/clear_command'
 
@@ -13,6 +14,7 @@ class FileCommandTest < Test::Unit::TestCase
   # This must be a class variable for delete hook to work properly
 
   TEST_ITER = 10
+  EMPTY_DIR = %w(. ..)
 
   def initialize(*args)
     super(*args)
@@ -50,6 +52,12 @@ class FileCommandTest < Test::Unit::TestCase
 
   def valid_file(path)
     path.nil? ? true : File.exists?(File.expand_path(path))
+  end
+
+  # Asserts that the test directory is the same as the sandbox, including file contents
+  def assert_pristine
+    out = `#{@sandbox_dir}/pristine.sh #{@sandbox_dir} #{@test_dir}`
+    assert_true(out.empty?, "Expected test directory unchanged")
   end
 
   ###### TESTING ######
@@ -171,6 +179,90 @@ class FileCommandTest < Test::Unit::TestCase
         end
       end
     end
+  end
+
+
+  def test_mv
+    cmds = [
+        'mv RandomText.txt RandomText1.txt', # rename file
+        'mv RandomText1.txt RandomText.txt', # reverse
+        'mv invalid.txt invalid1.txt',       # invalid rename file
+        'mv subdir/hello.txt hello.txt',     # move file
+        'mv hello.txt subdir/hello.txt',     # reverse
+        'mv subdir subdir1',                 # rename directory
+        'mv subdir1 subdir'                  # reverse
+    ]
+
+    cmds.each do |cmd|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('mv', tokens[0])
+      end
+
+      v_dir = valid_dir(tokens[1])
+      v_file = valid_file(tokens[1])
+
+      $stderr.reopen
+      MvCommand.new(tokens).execute
+
+      # Postconditions
+      begin
+        if v_dir
+          assert_false(Dir.exists?(tokens[1]), 'mv: Did not move src directory')
+          assert_true(Dir.exists?(tokens[2]), 'mv: Did not move directory to dst')
+        elsif v_file
+          assert_false(File.exists?(tokens[1]), 'mv: Did not move src file')
+          assert_true(File.exists?(tokens[2]), 'mv: Did not move file to dst')
+        else
+          assert_false($stderr.string.empty?, "mv: Invalid file path should print to stderr")
+        end
+      end
+    end
+
+    # Only works if test commands bring folder state back to original
+    assert_pristine
+  end
+
+  def test_rm
+    cmds =
+        Dir.entries(@sandbox_dir).map! { |f| "rm #{@test_dir}/#{f}" } +
+            ["rm #{@test_dir}/subdir -r"] +
+            ["rm #{@test_dir}/subdir2 -r"]
+
+    cmds.each do |cmd|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('rm', tokens[0])
+      end
+
+      v_dir = valid_dir(tokens[1])
+      v_file = valid_file(tokens[1])
+
+      $stderr.reopen
+      RmCommand.new(tokens).execute
+
+      # Postconditions
+      begin
+        if v_dir and (tokens.include?('-r') or tokens.include?('--recursive'))
+          assert_false(Dir.exists?(tokens[1]), 'rm: Did not delete directory')
+        elsif v_dir
+          assert_true(Dir.exists?(tokens[1]), 'rm: Should not delete directories without -r flag')
+          assert_false($stderr.string.empty?, "rm: Should print warning that deleting directories requires -r flag")
+        elsif v_file
+          assert_false(File.exists?(tokens[1]), 'rm: Did not delete file')
+        else
+          assert_false($stderr.string.empty?, "rm: Invalid file path should print to stderr")
+        end
+      end
+    end
+
+    # We deleted all files in the test directory
+    assert_equal(EMPTY_DIR, Dir.entries(@test_dir).sort!)
+    create_sandbox # reset
   end
     
   def test_cp
