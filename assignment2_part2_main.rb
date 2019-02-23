@@ -13,4 +13,4 @@ if ARGV.length != 2
   exit 0
 end
 
-Timer.countdown(ARGV[0].to_i, ARGV[1])
+Timer.delay(ARGV[0].to_i, ARGV[1])

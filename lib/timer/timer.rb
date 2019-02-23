@@ -3,11 +3,12 @@ require_relative 'ext/ctimer'
 module Timer
   extend self
 
-  def countdown(nanoseconds, msg)
+  def delay(nanoseconds, msg = "Timer Expired!")
     return unless valid_input?(nanoseconds, msg)
 
     child = Process.fork do
-      Ctimer::countdown(nanoseconds, msg)
+      Ctimer::delay(nanoseconds)
+      puts msg
       exit
     end
 

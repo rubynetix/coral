@@ -3,4 +3,4 @@
 #include "ctimer.h"
 %}
 
-void countdown(int nanoseconds, char *expiration_msg);
+void delay(int nanoseconds);
