@@ -174,8 +174,7 @@ class FileCommandTest < Test::Unit::TestCase
         ['cp invalid_file subdir/new_file', nil],
         ['cp .hidden_file .hidden_file_copy', "#{@test_dir}/.hidden_file_copy" ],
         ['cp RandomText.txt subdir/RandomTextSubdir.txt', "#{@test_dir}/subdir/RandomTextSubdir.txt" ],
-        ['cp subdir/hello.txt .', "#{@test_dir}/hello.txt"],
-        ['cp -r subdir new_subdir', "new_subdir/hello.txt"]
+        ['cp subdir/hello.txt .', "#{@test_dir}/hello.txt"]
     ]
 
     cp_exps.each do |cmd, expected_file|
@@ -192,14 +191,54 @@ class FileCommandTest < Test::Unit::TestCase
       # Postconditions
       begin
         unless expected_file.nil?
-          original_file = File.expand_path("#{@test_dir}/#{tokens[1]}")
+          source_file = File.expand_path("#{@test_dir}/#{tokens[1]}")
 
           assert_true(valid_file(expected_file), "cp: File not created properly")
-          assert_true(FileUtils.identical?(original_file, expected_file), "cp: Contents of the copied file is different from the original file")
+          assert_true(FileUtils.identical?(source_file, expected_file), "cp: Contents of the copied file is different from the original file")
         end
 
         unless valid_file(tokens[1])
-          assert_false($stderr.string.empty?, "cat: Invalid file path should print to stderr")
+          assert_false($stderr.string.empty?, "cp: Invalid file path should print to stderr")
+        end
+      end
+    end
+  end
+
+  def test_cp_r
+    cp_r_exps = [
+        ['cp -r subdir', nil ],
+        ['cp -r subdir temp', "#{@test_dir}/temp" ],
+        ['cp -r subdir/hello.txt empty', "#{@test_dir}/empty" ]
+    ]
+
+    cp_r_exps.each do |cmd, expected_dir|
+      tokens = cmd.strip.split(' ')
+
+      #Preconditions
+      begin
+        assert_equal('cp', tokens[0])
+      end
+
+      $stdout.reopen
+      CpCommand.new(tokens).execute
+
+      #Postconditions
+      begin
+        unless expected_dir.nil?
+          expected_files = Dir.entries(expected_dir)
+
+          copy_source = File.expand_path("#{@test_dir}/#{tokens[2]}")
+          if File.file?("#{@test_dir}/#{tokens[2]}")
+            source_files = [".", "..", File.basename(copy_source)]
+          else
+            source_files = Dir.entries(copy_source)
+          end
+
+          assert_equal(Set.new(expected_files), Set.new(source_files), "cp: Recursive copy should copy all files")
+        end
+
+        unless valid_file(tokens[1])
+          assert_false($stderr.string.empty?, "cp: Invalid file path should print to stderr")
         end
       end
     end
