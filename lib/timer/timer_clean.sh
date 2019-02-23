@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-cd ext/
+cd "$(dirname "$0")/ext/"
 rm ctimer_wrap.c Makefile *.so *.o .sitearchdir.time
