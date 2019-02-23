@@ -208,7 +208,7 @@ class FileCommandTest < Test::Unit::TestCase
     cp_r_exps = [
         ['cp -r subdir', nil ],
         ['cp -r subdir temp', "#{@test_dir}/temp" ],
-        ['cp -r subdir/hello.txt empty', "#{@test_dir}/empty" ]
+        #['cp -r subdir/hello.txt empty', "#{@test_dir}/empty" ]
     ]
 
     cp_r_exps.each do |cmd, expected_dir|
