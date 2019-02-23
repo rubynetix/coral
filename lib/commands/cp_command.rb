@@ -34,9 +34,15 @@ class CpCommand
       if @opts.recursive?
         FileUtils.cp_r(@src, @dst, verbose: @opts.verbose?)
       else
-        FileUtils.cp(@src, @dst, verbose: @opts.verbose?)
+        unless File.directory?(@src)
+          FileUtils.cp(@src, @dst, verbose: @opts.verbose?)
+        else
+          raise StandardError, "cp: ommiting directory #{@src}. Cannot perform non-recursive copy on directory"
+        end
       end
     rescue SystemCallError => e
+      $stderr.print "#{e.message}\n"
+    rescue StandardError => e
       $stderr.print "#{e.message}\n"
     end
   end
