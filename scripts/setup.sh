@@ -10,6 +10,7 @@ install_gem bundler
 bundle install
 
 # Install swig
+sudo apt-get update
 sudo apt-get install -y swig
 
 # Compile SWIG module
