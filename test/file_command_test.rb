@@ -5,6 +5,7 @@ require_relative '../lib/commands/cd_command'
 require_relative '../lib/commands/cat_command'
 require_relative '../lib/commands/cp_command'
 require_relative '../lib/color_text'
+require_relative '../lib/commands/clear_command'
 
 class FileCommandTest < Test::Unit::TestCase
   # This must be a class variable for delete hook to work properly
@@ -173,7 +174,8 @@ class FileCommandTest < Test::Unit::TestCase
         ['cp invalid_file subdir/new_file', nil],
         ['cp .hidden_file .hidden_file_copy', "#{@test_dir}/.hidden_file_copy" ],
         ['cp RandomText.txt subdir/RandomTextSubdir.txt', "#{@test_dir}/subdir/RandomTextSubdir.txt" ],
-        ['cp subdir/hello.txt .', "#{@test_dir}/hello.txt"]
+        ['cp subdir/hello.txt .', "#{@test_dir}/hello.txt"],
+        ['cp -r subdir new_subdir', "new_subdir/hello.txt"]
     ]
 
     cp_exps.each do |cmd, expected_file|
@@ -199,7 +201,6 @@ class FileCommandTest < Test::Unit::TestCase
         unless valid_file(tokens[1])
           assert_false($stderr.string.empty?, "cat: Invalid file path should print to stderr")
         end
-
       end
     end
   end
@@ -220,10 +221,9 @@ class FileCommandTest < Test::Unit::TestCase
       end
 
       $stdout.reopen
+      ClearCommand.new(tokens).execute
 
-      #Compare it to "" as the cursor should be placed at the start of the $stdout
-      assert_equal("", $stdout.string)
-
+      assert_equal("\e[H\e[2J\n", $stdout.string)
     end
   end
 end
