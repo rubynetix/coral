@@ -25,7 +25,7 @@ class DelayCommandTest < Test::Unit::TestCase
       end
 
       $stdout.reopen
-      DelayCommand.new([msg.to_s, delay.to_s]).execute
+      DelayCommand.new(["delay", delay.to_s, msg.to_s]).execute
       sleep(3)
 
       # Postconditions
