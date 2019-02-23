@@ -10,7 +10,7 @@ install_gem bundler
 bundle install
 
 # Install swig
-sudo apt-get install swig
+sudo apt-get install -y swig
 
 # Compile SWIG module
 cd "$(dirname "$0")/../lib/timer/ext/"
