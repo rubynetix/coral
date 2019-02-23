@@ -7,9 +7,7 @@ install_gem() {
 
 gem update --system
 install_gem bundler
-install_gem slop
-
-bundler install
+bundle install
 
 # Compile SWIG module
 cd "$(dirname "$0")/../lib/timer/ext/"

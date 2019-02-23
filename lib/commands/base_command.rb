@@ -1,3 +1,5 @@
+require 'slop'
+
 class NotEnoughArgumentsError < StandardError
 end
 

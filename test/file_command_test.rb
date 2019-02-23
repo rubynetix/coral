@@ -3,6 +3,8 @@ require 'securerandom'
 require_relative '../lib/commands/ls_command'
 require_relative '../lib/commands/cd_command'
 require_relative '../lib/commands/cat_command'
+require_relative '../lib/commands/touch_command'
+require_relative '../lib/commands/rm_command'
 require_relative '../lib/color_text'
 
 class FileCommandTest < Test::Unit::TestCase
@@ -163,5 +165,25 @@ class FileCommandTest < Test::Unit::TestCase
         end
       end
     end
+  end
+
+  def test_touch
+    random_file = "#{SecureRandom.hex(6)}.txt"
+    tokens = ['touch', random_file]
+
+    # Preconditions
+    begin
+      assert_equal('touch', tokens[0])
+    end
+
+    $stdout.reopen
+    TouchCommand.new(tokens).execute
+
+    # Postconditions
+    begin
+      assert_true(File.exists?(random_file))
+    end
+
+    RmCommand.new(['rm', random_file]).execute
   end
 end

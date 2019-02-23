@@ -12,6 +12,7 @@ GEM
     slop (4.6.2)
     test-unit (3.2.7)
       power_assert
+    timecop (0.9.1)
 
 PLATFORMS
   ruby
@@ -23,6 +24,7 @@ DEPENDENCIES
   rake
   slop (>= 4.6.2)
   test-unit
+  timecop
 
 RUBY VERSION
    ruby 2.5.3p105
