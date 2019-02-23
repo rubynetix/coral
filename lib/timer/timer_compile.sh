@@ -3,7 +3,7 @@
 cd ext/
 
 # Create timer module
-swig -ruby timer.i
+swig -ruby ctimer.i
 ruby extconf.rb
 make
 make install
