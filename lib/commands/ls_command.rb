@@ -18,7 +18,7 @@ class LsCommand
 
   def execute
     begin
-      files = Dir.entries(@dir)
+      files = Dir.entries(@dir).sort_by(&:downcase)
     rescue SystemCallError => e
       $stderr.print "#{e.message}\n"
       return
