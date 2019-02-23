@@ -270,6 +270,7 @@ class FileCommandTest < Test::Unit::TestCase
 
       assert_equal("\e[H\e[2J\n", $stdout.string)
     end
+  end
 
   def test_touch
     random_file = "#{SecureRandom.hex(6)}.txt"
