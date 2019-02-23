@@ -18,13 +18,13 @@ class LsCommand
 
   def execute
     begin
-      files = Dir.entries(@dir)
+      files = Dir.entries(@dir).sort_by(&:downcase)
     rescue SystemCallError => e
       $stderr.print "#{e.message}\n"
       return
     end
 
-    files.select! { |f| f.start_with?('.') } unless @opts.all?
+    files.select! { |f| !f.start_with?('.') } unless @opts.all?
 
     orig_dir = Dir.pwd
     Dir.chdir(@dir)

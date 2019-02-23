@@ -7,6 +7,15 @@ install_gem() {
 
 gem update --system
 install_gem bundler
-install_gem slop
+bundle install
 
-bundler install
+# Install swig
+sudo apt-get update
+sudo apt-get install -y swig
+
+# Compile SWIG module
+cd "$(dirname "$0")/../lib/timer/ext/"
+swig -ruby ctimer.i
+ruby extconf.rb
+make
+make install

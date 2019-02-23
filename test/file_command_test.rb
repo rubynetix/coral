@@ -4,6 +4,9 @@ require_relative '../lib/commands/ls_command'
 require_relative '../lib/commands/cd_command'
 require_relative '../lib/commands/cat_command'
 require_relative '../lib/commands/cp_command'
+require_relative '../lib/commands/touch_command'
+require_relative '../lib/commands/rm_command'
+require_relative '../lib/commands/mv_command'
 require_relative '../lib/color_text'
 require_relative '../lib/commands/clear_command'
 
@@ -11,6 +14,7 @@ class FileCommandTest < Test::Unit::TestCase
   # This must be a class variable for delete hook to work properly
 
   TEST_ITER = 10
+  EMPTY_DIR = %w(. ..)
 
   def initialize(*args)
     super(*args)
@@ -50,12 +54,18 @@ class FileCommandTest < Test::Unit::TestCase
     path.nil? ? true : File.exists?(File.expand_path(path))
   end
 
+  # Asserts that the test directory is the same as the sandbox, including file contents
+  def assert_pristine
+    out = `#{@sandbox_dir}/pristine.sh #{@sandbox_dir} #{@test_dir}`
+    assert_true(out.empty?, "Expected test directory unchanged")
+  end
+
   ###### TESTING ######
 
   def test_ls
     files = Dir.entries(@sandbox_dir).sort!
-    no_hidden_files = files.select { |f| f.start_with?('.') }
-    sub_files = Dir.entries("#{@sandbox_dir}/subdir").select { |f| f.start_with?('.') }.sort!
+    no_hidden_files = files.select { |f| !f.start_with?('.') }
+    sub_files = Dir.entries("#{@sandbox_dir}/subdir").select { |f| !f.start_with?('.') }.sort!
 
     cmds = [
       'ls',
@@ -93,11 +103,16 @@ class FileCommandTest < Test::Unit::TestCase
                                  .map { |f| ColorText.rm_color(f) }
 
           assert_false(printed_files.empty?, "ls: No files printed for non-empty directory")
-          assert_equal(e_files, printed_files.sort, "ls: Incorrect files printed")
+          assert_equal(e_files, printed_files.sort, "ls: Incorrect files printed for \"#{cmd}\"")
+
+          unless tokens.include?('-a') or tokens.include?('--all')
+            assert_false(printed_files.any? { |f| f.start_with?('.') }, "ls: Prints hidden files by default")
+          end
         else
           # We have printed something to stderr
           assert_false($stderr.string.empty?, "ls: Invalid directory should print message to stderr")
         end
+        assert_pristine
       end
     end
   end
@@ -131,6 +146,7 @@ class FileCommandTest < Test::Unit::TestCase
         unless valid_dir(tokens[1])
           assert_false($stderr.string.empty?, "cd: Invalid directory should print message to stderr")
         end
+        assert_pristine
       end
     end
   end
@@ -163,6 +179,7 @@ class FileCommandTest < Test::Unit::TestCase
         unless valid_file(tokens[1])
           assert_false($stderr.string.empty?, "cat: Invalid file path should print to stderr")
         end
+        assert_pristine
       end
     end
   end
@@ -256,13 +273,118 @@ class FileCommandTest < Test::Unit::TestCase
 
       # Preconditions
       begin
-        assert_equal('clear', tokens[0])
+         assert_equal('clear', tokens[0])
       end
 
       $stdout.reopen
       ClearCommand.new(tokens).execute
 
-      assert_equal("\e[H\e[2J\n", $stdout.string)
+      # Postconditions
+      begin
+        assert_equal("\e[H\e[2J\n", $stdout.string)
+      end
     end
+  end
+
+  def test_touch
+    random_file = "#{SecureRandom.hex(6)}.txt"
+    tokens = ['touch', random_file]
+
+    # Preconditions
+    begin
+      assert_equal('touch', tokens[0])
+    end
+
+    $stdout.reopen
+    TouchCommand.new(tokens).execute
+
+    # Postconditions
+    begin
+      assert_true(File.exists?(random_file))
+    end
+
+    RmCommand.new(['rm', random_file]).execute
+  end
+
+  def test_rm
+    cmds =
+        Dir.entries(@sandbox_dir).map! { |f| "rm #{@test_dir}/#{f}" } +
+        ["rm #{@test_dir}/subdir -r"]
+
+    cmds.each do |cmd|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('rm', tokens[0])
+      end
+
+      v_dir = valid_dir(tokens[1])
+      v_file = valid_file(tokens[1])
+
+      $stderr.reopen
+      RmCommand.new(tokens).execute
+
+      # Postconditions
+      begin
+        if v_dir and (tokens.include?('-r') or tokens.include?('--recursive'))
+          assert_false(Dir.exists?(tokens[1]), 'rm: Did not delete directory')
+        elsif v_dir
+          assert_true(Dir.exists?(tokens[1]), 'rm: Should not delete directories without -r flag')
+          assert_false($stderr.string.empty?, "rm: Should print warning that deleting directories requires -r flag")
+        elsif v_file
+          assert_false(File.exists?(tokens[1]), 'rm: Did not delete file')
+        else
+          assert_false($stderr.string.empty?, "rm: Invalid file path should print to stderr")
+        end
+      end
+    end
+
+    # We deleted all files in the test directory
+    assert_equal(EMPTY_DIR, Dir.entries(@test_dir).sort!)
+    create_sandbox # reset
+  end
+
+  def test_mv
+    cmds = [
+        'mv RandomText.txt RandomText1.txt', # rename file
+        'mv RandomText1.txt RandomText.txt', # reverse
+        'mv invalid.txt invalid1.txt',       # invalid rename file
+        'mv subdir/hello.txt hello.txt',     # move file
+        'mv hello.txt subdir/hello.txt',     # reverse
+        'mv subdir subdir1',                 # rename directory
+        'mv subdir1 subdir'                  # reverse
+    ]
+
+    cmds.each do |cmd|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('mv', tokens[0])
+      end
+
+      v_dir = valid_dir(tokens[1])
+      v_file = valid_file(tokens[1])
+
+      $stderr.reopen
+      MvCommand.new(tokens).execute
+
+      # Postconditions
+      begin
+        if v_dir
+          assert_false(Dir.exists?(tokens[1]), 'mv: Did not move src directory')
+          assert_true(Dir.exists?(tokens[2]), 'mv: Did not move directory to dst')
+        elsif v_file
+          assert_false(File.exists?(tokens[1]), 'mv: Did not move src file')
+          assert_true(File.exists?(tokens[2]), 'mv: Did not move file to dst')
+        else
+          assert_false($stderr.string.empty?, "mv: Invalid file path should print to stderr")
+        end
+      end
+    end
+
+    # Only works if test commands bring folder state back to original
+    assert_pristine
   end
 end

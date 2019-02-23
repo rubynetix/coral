@@ -1,1 +1,0 @@
-void countdown(int flicks);
