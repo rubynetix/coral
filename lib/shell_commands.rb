@@ -10,6 +10,7 @@ require_relative 'commands/touch_command'
 require_relative 'commands/date_command'
 require_relative 'commands/cat_command'
 require_relative 'commands/delay_command'
+require_relative 'commands/clear_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -24,18 +25,9 @@ module ShellCommands
     end
   end
 
-  # Use help <command> to get command use information
+  # Use <command> --help to get command use information
   def do_help(input_tokens = 'help')
-    input_tokens = input_tokens.strip
-    command = input_tokens.split(' ')[1]
-    return help_help if (input_tokens.eql? 'help') || command.nil?
-
-    cmd_docs = docs command
-    if cmd_docs.nil?
-      puts 'No docs for: ' + command
-      cmd_docs = docs input_tokens.join(" ")
-    end
-    puts cmd_docs
+    return help_help
   end
 
   def exec_as_child
@@ -48,8 +40,7 @@ module ShellCommands
   end
 
   def do_clear(input_tokens)
-    # ANSI sequence wont work with RubyMine console but will work with others (eg Ubuntu)
-    puts "\e[H\e[2J"
+    ClearCommand.new(input_tokens).execute
   end
 
   def do_cd(input_tokens)
