@@ -1,7 +1,7 @@
 require 'test/unit'
-require_relative '../lib/timer/timer'
+require_relative '../lib/commands/delay_command'
 
-class TimerTest < Test::Unit::TestCase
+class DelayCommandTest < Test::Unit::TestCase
   TEST_ITER = 1
 
   def setup
@@ -14,7 +14,7 @@ class TimerTest < Test::Unit::TestCase
     (0...len).map { (65 + rand(26)).chr }.join
   end
 
-  def test_smoke_test
+  def tst_smoke_test
     # TODO: Replace with meaningful tests
     msg = rand_msg
     delay = rand(1...10)
@@ -22,12 +22,11 @@ class TimerTest < Test::Unit::TestCase
     TEST_ITER.times do
       # Preconditions
       begin
-        assert_true(Timer.valid_input?(delay, msg), "Timer input must be an integer delay and string message.")
       end
 
       $stdout.reopen
-      Timer.delay(delay, msg)
-      sleep(5)
+      DelayCommand.new(["delay", delay.to_s, msg.to_s]).execute
+      sleep(3)
 
       # Postconditions
       begin

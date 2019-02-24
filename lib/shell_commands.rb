@@ -9,6 +9,7 @@ require_relative 'commands/cd_command'
 require_relative 'commands/touch_command'
 require_relative 'commands/date_command'
 require_relative 'commands/cat_command'
+require_relative 'commands/delay_command'
 require_relative 'commands/clear_command'
 
 # Basic Commands for a Ruby Shell
@@ -98,6 +99,10 @@ module ShellCommands
     exec_as_child do
       DateCommand.new(input_tokens).execute
     end
+  end
+
+  def do_delay(input_tokens)
+    DelayCommand.new(input_tokens).execute
   end
 
   def docs(command_name)

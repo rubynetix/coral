@@ -9,12 +9,12 @@ gem update --system
 install_gem bundler
 bundle install
 
-# Install swig
+# Install SWIG
 sudo apt-get update
 sudo apt-get install -y swig
 
 # Compile SWIG module
-cd "$(dirname "$0")/../lib/timer/ext/"
+cd "$(dirname "$0")/../lib/timer/"
 swig -ruby ctimer.i
 ruby extconf.rb
 make

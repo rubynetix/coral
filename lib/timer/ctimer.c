@@ -4,5 +4,5 @@
 
 void delay(int nanoseconds) {
     // TODO: Replace sleep with nanosecond timer implementation
-    sleep(5);
+    sleep(1);
 }
