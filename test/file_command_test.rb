@@ -254,7 +254,7 @@ class FileCommandTest < Test::Unit::TestCase
           assert_equal(Set.new(expected_files), Set.new(source_files), "cp: Recursive copy should copy all files")
         end
 
-        unless valid_file(tokens[1])
+        unless valid_file(tokens[2])
           assert_false($stderr.string.empty?, "cp: Invalid file path should print to stderr")
         end
       end
