@@ -1,5 +1,4 @@
 class StdinReader
-
   def initialize
     @history_index = -1
   end
@@ -17,9 +16,7 @@ class StdinReader
   def prev_hist
     return unless @history_index.positive?
 
-    while Readline::HISTORY[@history_index].to_s == ""
-      @history_index -= 1
-    end
+    @history_index -= 1 while Readline::HISTORY[@history_index].to_s == ''
 
     puts Readline::HISTORY[@history_index].to_s
     @history_index -= 1
@@ -28,9 +25,7 @@ class StdinReader
   def next_hist
     return unless @history_index < Readline::HISTORY.size
 
-    while Readline::HISTORY[@history_index].to_s == ""
-      @history_index += 1
-    end
+    @history_index += 1 while Readline::HISTORY[@history_index].to_s == ''
 
     puts Readline::HISTORY[@history_index].to_s
     @history_index += 1

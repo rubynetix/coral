@@ -10,6 +10,7 @@ gem 'method_source'
 
 # Deps
 gem 'slop', '>=4.6.2', require: true
+gem 'timecop'
 
 # TODO: If we want to get codecov working
 # gem 'codecov', require: false, group: :test

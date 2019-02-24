@@ -1,5 +1,5 @@
 language: ruby
-sudo: false
+sudo: true
 dist: trusty
 
 notifications:
@@ -8,16 +8,10 @@ notifications:
 rvm: 2.5.3
 
 stages:
-  - lint
   - test
 
 jobs:
   include:
-    - stage: lint
-      before_install:
-        - gem install rubocop
-      script:
-        - rubocop
     - stage: test
       before_install:
         - ./scripts/setup.sh

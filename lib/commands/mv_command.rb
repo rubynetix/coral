@@ -5,7 +5,7 @@ require_relative 'base_command'
 class MvCommand
   include BaseCommand
 
-  USAGE = <<~EOS
+  USAGE = <<~EOS.freeze
     Usage: mv [source] [dest]
       Rename [source] to [dest], or move [source] to [dest].
 
@@ -20,10 +20,14 @@ class MvCommand
 
   def execute
     if @opts.help? || @src.nil? || @dst.nil?
-      puts @opts.to_s(prefix: "  ")
+      puts @opts.to_s(prefix: '  ')
       return
     end
 
-    FileUtils.mv(@src, @dst)
+    begin
+      FileUtils.mv(@src, @dst)
+    rescue SystemCallError => e
+      $stderr.print "#{e.message}\n"
+    end
   end
 end

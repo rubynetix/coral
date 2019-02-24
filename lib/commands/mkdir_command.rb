@@ -4,8 +4,8 @@ require_relative 'base_command'
 class MkdirCommand
   include BaseCommand
 
-  ERR_DIR_EXISTS = "mkdir : cannot create directory %s, file already exists.\n"
-  USAGE = <<~EOS
+  ERR_DIR_EXISTS = "mkdir : cannot create directory %s, file already exists.\n".freeze
+  USAGE = <<~EOS.freeze
     Usage: mkdir [options] [directory]
       Creates the [directory] if it does not already exist.
 
@@ -20,7 +20,7 @@ class MkdirCommand
 
   def execute
     if @opts.help? || @dir.nil?
-      puts @opts.to_s(prefix: "  ")
+      puts @opts.to_s(prefix: '  ')
       return
     end
 
