@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'securerandom'
+require 'set'
 require_relative '../lib/commands/ls_command'
 require_relative '../lib/commands/cd_command'
 require_relative '../lib/commands/cat_command'

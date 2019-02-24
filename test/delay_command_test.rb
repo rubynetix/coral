@@ -14,7 +14,7 @@ class DelayCommandTest < Test::Unit::TestCase
     (0...len).map { (65 + rand(26)).chr }.join
   end
 
-  def test_smoke_test
+  def tst_smoke_test
     # TODO: Replace with meaningful tests
     msg = rand_msg
     delay = rand(1...10)
