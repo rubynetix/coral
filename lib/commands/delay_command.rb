@@ -5,6 +5,7 @@ require_relative '../timer/ctimer'
 class DelayCommand
   include BaseCommand
 
+  NANOS_PER_SECOND = 1_000_000_000
   USAGE = <<~EOS.freeze
     Usage: delay [options] [time] "[message]"
       Prints [message] after a non-blocking delay of [time] nanoseconds.
@@ -30,7 +31,11 @@ class DelayCommand
     end
 
     child = Process.fork do
-      Ctimer::delay(@ns)
+      begin
+        Ctimer::delay(@ns / NANOS_PER_SECOND, @ns % NANOS_PER_SECOND)
+      rescue StandardError => e
+        puts "#{e.message}"
+      end
       puts @msg
       exit
     end

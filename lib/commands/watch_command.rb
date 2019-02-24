@@ -8,19 +8,34 @@ class WatchCommand
   USAGE = ''.freeze
 
   def initialize(input)
-    @opts = parse_default_opts(input)
+    @opts = parse_args(input)
     @opts.options.banner = USAGE
     @files = !@opts.arguments.empty? ? @opts.arguments : nil
   end
 
-  def execute
-    if @opts.help? || @dir.nil?
+  def nil_or_help?
+    if @opts.help? || @files.nil?
       puts @opts.to_s(prefix: '  ')
-      return
+      return true
     end
+    false
   end
 
-  def execute_change_action(action, duration)
+  def parse_args(input)
+    opts = Slop.parse do |o|
+      o.string '-a', '--action', 'action tiggered on detection', required: true
+      o.integer '-d', '--duration', 'action time delay in flicks', default: 0
+      o.on '-h', '--help' do
+        puts USAGE
+        exit
+      end
+    end
+
+    opts.arguments.shift
+    opts
+  end
+
+  def execute_change_action
     # TODO: what actions? integrate Timer
   end
 end

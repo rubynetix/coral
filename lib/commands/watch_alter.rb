@@ -9,5 +9,21 @@ class WatchAlter < WatchCommand
     [options]
   EOS
 
-  def execute; end
+  def initialize(input)
+    super input
+  end
+
+  def check_for_alterations
+    # TODO
+  end
+
+  def execute # TODO
+    return if nil_or_help?
+
+    @files.each do |file|
+      @files.pop(file) if File.exist?(file)
+    end
+
+    check_for_alterations
+  end
 end
