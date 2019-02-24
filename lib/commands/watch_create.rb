@@ -3,7 +3,7 @@ require_relative 'watch_command'
 class WatchCreate < WatchCommand
 
   USAGE = <<~EOS.freeze
-    Usage: watch_create [filenames] [action] [duration]
+    Usage: watch_create [action] [duration] [filenames]
       ...
 
     [options]
@@ -13,7 +13,24 @@ class WatchCreate < WatchCommand
     super input
   end
 
+  def check_for_creations
+    until @files.empty?
+      @files.each do |file|
+        next unless File.exist?(file)
+
+        @files.pop(file)
+        execute_change_action
+      end
+    end
+  end
+
   def execute
-    super.execute
+    return if nil_or_help?
+
+    @files.each do |file|
+      @files.pop(file) if File.exist?(file)
+    end
+
+    check_for_creations
   end
 end
