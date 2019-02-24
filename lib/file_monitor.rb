@@ -3,7 +3,7 @@ require_relative 'commands/watch_create'
 require_relative 'commands/watch_alter'
 require_relative 'commands/watch_delete'
 
-# Functionality to keep track of all files in existence at any point in time.
+# Cmd with extra functionality to keep track of all files in existence at any point in time.
 class FileMonitor < Cmd
   def initialize(reader, welcome = 'Welcome to the Coral shell.')
     super reader, welcome
