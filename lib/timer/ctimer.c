@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
 #include "ctimer.h"
 
-void delay(int nanoseconds) {
-    // TODO: Replace sleep with nanosecond timer implementation
-    sleep(1);
+void delay(long seconds, long nanoseconds) {
+	struct timespec ts;
+	ts.tv_sec = seconds;
+	ts.tv_nsec = nanoseconds;
+	nanosleep(&ts, NULL);
 }

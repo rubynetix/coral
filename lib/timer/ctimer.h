@@ -1,1 +1,1 @@
-void delay(int nanoseconds);
+void delay(long seconds, long nanoseconds);
