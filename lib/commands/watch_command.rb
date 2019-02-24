@@ -1,4 +1,5 @@
 require_relative 'base_command'
+require_relative '../timer/timer'
 
 class WatchCommand
   include Timer
