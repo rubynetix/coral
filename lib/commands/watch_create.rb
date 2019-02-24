@@ -1,0 +1,2 @@
+class WatchCreate < WatchCommand
+end

@@ -1,0 +1,2 @@
+class WatchAlter < WatchCommand
+end

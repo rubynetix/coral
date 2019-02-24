@@ -1,0 +1,2 @@
+class WatchDelete < WatchCommand
+end
