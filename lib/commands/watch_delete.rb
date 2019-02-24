@@ -9,5 +9,21 @@ class WatchDelete < WatchCommand
     [options]
   EOS
 
-  def execute; end
+  def initialize(input)
+    super input
+  end
+
+  def check_for_deletions
+    # TODO
+  end
+
+  def execute
+    return if nil_or_help?
+
+    @files.each do |file|
+      @files.pop(file) unless File.exist?(file)
+    end
+
+    check_for_deletions
+  end
 end
