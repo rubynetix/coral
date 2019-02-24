@@ -3,4 +3,4 @@
 #include "ctimer.h"
 %}
 
-void delay(int nanoseconds);
+void delay(long long nanoseconds);
