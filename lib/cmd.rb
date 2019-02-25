@@ -58,6 +58,8 @@ class Cmd
     rescue IOError => e
       $stderr.print "#{e.message}\n"
       return
+    rescue Slop::UnknownOption => e
+      $stderr.print "#{e.message}\n"
     end
   end
 

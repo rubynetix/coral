@@ -34,8 +34,13 @@ module ShellCommands
 
   def exec_as_child
     cmd_pid = fork do
-      yield
-      exit
+      begin
+        yield
+        exit
+      rescue Slop::UnknownOption => e
+        $stderr.print "#{e.message}\n"
+        exit
+      end
     end
 
     Process.waitpid(cmd_pid)

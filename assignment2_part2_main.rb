@@ -8,4 +8,8 @@
 
 require_relative 'lib/commands/delay_command'
 
+if ARGV.nil? || ARGV.length < 2
+  puts DelayCommand::USAGE
+  exit
+end
 DelayCommand.new(['delay'] + ARGV).execute
