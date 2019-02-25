@@ -11,7 +11,7 @@ require_relative 'lib/readers/stdin_reader'
 require_relative 'lib/readers/list_reader'
 
 puts
-# c = ["watch_create hello.txt -a date -d 1", "touch hello.txt", "rm hello.txt"]
+# c = ["watch_create -f hello.txt -d 1 date", "touch hello.txt", "rm hello.txt"]
 # shell = FileMonitor.new(ListReader.new(c))
 shell = FileMonitor.new(StdinReader.new)
 shell.cmd_loop
