@@ -21,7 +21,7 @@ class WatchAlter < WatchCommand
     return if nil_or_help?
 
     @files.each do |file|
-      @files.pop(file) if File.exist?(file)
+      @files.delete(file) if File.exist?(file)
     end
 
     check_for_alterations

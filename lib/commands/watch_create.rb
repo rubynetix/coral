@@ -11,6 +11,7 @@ class WatchCreate < WatchCommand
 
   def initialize(input)
     super input
+    @opts.options.banner = USAGE
   end
 
   def check_for_creations
@@ -18,7 +19,7 @@ class WatchCreate < WatchCommand
       @files.each do |file|
         next unless File.exist?(file)
 
-        @files.pop(file)
+        @files.delete(file)
         execute_change_action
       end
     end
@@ -26,7 +27,6 @@ class WatchCreate < WatchCommand
 
   def execute
     return if nil_or_help?
-
     @files.each do |file|
       @files.pop(file) if File.exist?(file)
     end
