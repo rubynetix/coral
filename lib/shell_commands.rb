@@ -1,5 +1,6 @@
 require 'method_source'
 
+require_relative 'cmd.rb'
 require_relative 'commands/ls_command'
 require_relative 'commands/mkdir_command'
 require_relative 'commands/rm_command'
@@ -47,7 +48,9 @@ module ShellCommands
     CdCommand.new(input_tokens).execute
   end
 
-  def do_exit(input_tokens); end
+  def do_exit(input_tokens);
+    Process.kill('TERM', Cmd.shell_pid)
+  end
 
   def do_ls(input_tokens)
     exec_as_child do
