@@ -8,6 +8,7 @@ require_relative '../lib/commands/cp_command'
 require_relative '../lib/commands/touch_command'
 require_relative '../lib/commands/rm_command'
 require_relative '../lib/commands/mv_command'
+require_relative '../lib/commands/exit_command'
 require_relative '../lib/color_text'
 require_relative '../lib/commands/clear_command'
 
@@ -388,4 +389,32 @@ class FileCommandTest < Test::Unit::TestCase
     # Only works if test commands bring folder state back to original
     assert_pristine
   end
+
+  def test_exit
+    cmds = [
+        'exit',       # default exit
+        'exit -h',    # exit with flag (should still exit)
+        'exit subdir' # exit with arg (should still exit)
+    ]
+
+    cmds.each do |cmd|
+      tokens = cmd.strip.split(' ')
+
+      # Preconditions
+      begin
+        assert_equal('exit', tokens[0])
+      end
+
+      signal_recieved = FALSE
+      trap('TERM'){ signal_recieved = TRUE }
+
+      ExitCommand.new(tokens, Process.pid).execute()
+
+      assert_true(signal_recieved, "Termination signal not recieved from ExitCommand")
+    end
+
+
+
+  end
+
 end

@@ -7,6 +7,12 @@ require 'set'
 class Cmd
   include ShellCommands
 
+  @shell_pid = Process.pid
+
+  class << self
+    attr_accessor :shell_pid
+  end
+
   def initialize(reader, welcome = 'Welcome to the Coral shell.')
     @welcome = welcome
     @reader = reader
@@ -36,6 +42,8 @@ class Cmd
   end
 
   def process_input(input)
+    trap('TERM'){ exit(status=1)}
+
     begin
       input_tokens = input.strip.split(' ')
       command = input_tokens[0]
