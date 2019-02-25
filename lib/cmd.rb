@@ -59,7 +59,7 @@ class Cmd
       $stderr.print "#{e.message}\n"
       return
     rescue Slop::UnknownOption => e
-      $stderr.print "#{command}: #{e.message}\n"
+      $stderr.print "#{e.message}\n"
     end
   end
 
