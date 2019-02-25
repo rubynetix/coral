@@ -21,7 +21,7 @@ class WatchCommand
 
   def parse_args(args)
     opts = Slop.parse args do |o|
-      o.string '-a', '--action', 'action triggered on detection', required: true
+      o.string '-a', '--action', 'action triggered on detection', default: "date"
       o.int '-d', '--duration', 'action time delay in flicks', default: 0
       o.bool '-v', '--verbose', 'display file that triggered the action', default: true
       o.on '-h', '--help' do
