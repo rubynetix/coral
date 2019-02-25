@@ -13,6 +13,7 @@ require_relative 'commands/cat_command'
 require_relative 'commands/delay_command'
 require_relative 'commands/clear_command'
 require_relative 'commands/exit_command'
+require_relative 'commands/echo_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -89,7 +90,11 @@ module ShellCommands
     end
   end
 
-  def do_echo(input_tokens); end
+  def do_echo(input_tokens)
+    exec_as_child do
+      EchoCommand.new(input_tokens).execute
+    end
+  end
 
   # Concatenate file(s) to standard output
   def do_cat(input_tokens)
