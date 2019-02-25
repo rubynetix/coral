@@ -7,7 +7,11 @@ require 'set'
 class Cmd
   include ShellCommands
 
-  attr_reader(:cmd_mutex)
+  @shell_pid = Process.pid
+
+  class << self
+    attr_accessor :shell_pid
+  end
 
   def initialize(reader, welcome = 'Welcome to the Coral shell.')
     @welcome = welcome
@@ -16,7 +20,6 @@ class Cmd
     @original_stdout
 
     @reader.prepare
-    @cmd_mutex = Mutex.new
   end
 
   def loop_setup
@@ -38,25 +41,23 @@ class Cmd
   end
 
   def process_input(input)
-    @cmd_mutex.synchronize do
-      begin
-        input_tokens = input.strip.split(' ')
-        command = input_tokens[0]
-        if input_tokens.include?(">")
-          input_tokens = redirect_stdout(input_tokens)
-        end
+    trap('TERM'){ exit(status=1) }
 
-        if !(new_cmd = get_cmd command).nil?
-          process_cmd new_cmd, input_tokens
-        else
-          handle_unknown_cmd command
-        end
-      rescue IOError => e
-        $stderr.print "#{e.message}\n"
-        return
+    begin
+      input_tokens = input.strip.split(' ')
+      command = input_tokens[0]
+      if input_tokens.include?(">")
+        input_tokens = redirect_stdout(input_tokens)
       end
 
-      $stdout = @original_stdout.dup
+      if !(new_cmd = get_cmd command).nil?
+        process_cmd new_cmd, input_tokens
+      else
+        handle_unknown_cmd command
+      end
+    rescue IOError => e
+      $stderr.print "#{e.message}\n"
+      return
     end
   end
 
