@@ -24,7 +24,7 @@ class Cmd
 
   def loop_setup
     @original_stdout = $stdout.dup
-    puts @welcome
+    puts @welcome unless @welcome.nil?
   end
 
   def loop_finish; end
@@ -36,13 +36,12 @@ class Cmd
       next if input == ''
 
       process_input input
-      $stdout = @original_stdout.dup
     end
     loop_finish
   end
 
   def process_input(input)
-    trap('TERM'){ exit(status=1)}
+    trap('TERM'){ exit(status=1) }
 
     begin
       input_tokens = input.strip.split(' ')

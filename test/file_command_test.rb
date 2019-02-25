@@ -58,6 +58,7 @@ class FileCommandTest < Test::Unit::TestCase
 
   # Asserts that the test directory is the same as the sandbox, including file contents
   def assert_pristine
+    # The bash script that executes this is in the sandbox itself
     out = `#{@sandbox_dir}/pristine.sh #{@sandbox_dir} #{@test_dir}`
     assert_true(out.empty?, "Expected test directory unchanged")
   end
@@ -412,9 +413,5 @@ class FileCommandTest < Test::Unit::TestCase
 
       assert_true(signal_recieved, "Termination signal not recieved from ExitCommand")
     end
-
-
-
   end
-
 end
