@@ -41,6 +41,8 @@ module ShellCommands
       rescue Slop::UnknownOption => e
         $stderr.print "#{e.message}\n"
         exit
+      rescue TypeError => e
+        $stderr.print "#{e.message}\n"
       end
     end
 
