@@ -16,6 +16,7 @@ class DelayCommand
   def initialize(args)
     @opts = Slop.parse args do |o|
       o.string '-u', '--units', 'Specify alternate SI units. Valid options are s, ms, us, ns.'
+      o.bool '-b', '--blocking', 'Block the current process until the timer expires -- defaults to non-blocking.'
       o.bool '-h', '--help'
     end
 
@@ -40,7 +41,7 @@ class DelayCommand
       exit
     end
 
-    Process.detach(child)
+    @opts.blocking? ? Process.wait(child) : Process.detach(child)
   end
 
   private
