@@ -6,7 +6,6 @@ class DelayCommandTest < Test::Unit::TestCase
   def setup
     dir = File.expand_path('../assignment2_part2_main.rb', __dir__)
     @driver = "ruby #{dir}"
-    puts @driver
   end
 
   def rand_msg(len = rand(1..25))
