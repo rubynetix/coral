@@ -57,6 +57,7 @@ class FileCommandTest < Test::Unit::TestCase
 
   # Asserts that the test directory is the same as the sandbox, including file contents
   def assert_pristine
+    # The bash script that executes this is in the sandbox itself
     out = `#{@sandbox_dir}/pristine.sh #{@sandbox_dir} #{@test_dir}`
     assert_true(out.empty?, "Expected test directory unchanged")
   end
@@ -388,4 +389,10 @@ class FileCommandTest < Test::Unit::TestCase
     # Only works if test commands bring folder state back to original
     assert_pristine
   end
+
+  def test_watch_delete
+
+  end
+
+
 end

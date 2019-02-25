@@ -11,17 +11,17 @@ class FileMonitor < Cmd
   end
 
   def do_watch_create(input_tokens)
-    thread = Thread.start { WatchCreate.new(input_tokens).execute }
+    thread = Thread.new { WatchCreate.new(input_tokens).execute }
     @watch_threads.push(thread)
   end
 
   def do_watch_alter(input_tokens)
-    thread = Thread.start { WatchAlter.new(input_tokens).execute }
+    thread = Thread.new { WatchAlter.new(input_tokens).execute }
     @watch_threads.push(thread)
   end
 
   def do_watch_delete(input_tokens)
-    thread = Thread.start { WatchDelete.new(input_tokens).execute }
+    thread = Thread.new { WatchDelete.new(input_tokens).execute }
     @watch_threads.push(thread)
   end
 
