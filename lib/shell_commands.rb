@@ -1,6 +1,6 @@
 require 'method_source'
 
-require_relative 'cmd.rb'
+require_relative 'cmd'
 require_relative 'commands/ls_command'
 require_relative 'commands/mkdir_command'
 require_relative 'commands/rm_command'
@@ -12,6 +12,7 @@ require_relative 'commands/date_command'
 require_relative 'commands/cat_command'
 require_relative 'commands/delay_command'
 require_relative 'commands/clear_command'
+require_relative 'commands/exit_command'
 
 # Basic Commands for a Ruby Shell
 module ShellCommands
@@ -49,7 +50,7 @@ module ShellCommands
   end
 
   def do_exit(input_tokens);
-    Process.kill('TERM', Cmd.shell_pid)
+    ExitCommand.new(input_tokens, Cmd.shell_pid).execute()
   end
 
   def do_ls(input_tokens)
