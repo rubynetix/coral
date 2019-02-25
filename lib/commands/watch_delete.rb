@@ -11,6 +11,7 @@ class WatchDelete < WatchCommand
 
   def initialize(input)
     super input
+    @opts.options.banner = USAGE
   end
 
   def check_for_deletions
@@ -18,7 +19,7 @@ class WatchDelete < WatchCommand
       @files.each do |file|
         next unless !File.exist?(file)
 
-        @files.pop(file)
+        @files.delete(file)
         execute_change_action
       end
     end
