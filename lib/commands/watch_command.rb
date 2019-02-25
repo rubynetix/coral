@@ -6,8 +6,11 @@ class WatchCommand
 
   attr_reader(:opts)
 
+  USAGE = ''.freeze
+
   def initialize(input)
     @opts = parse_args(input)
+    @opts.options.banner = USAGE
     @files = !@opts.arguments.empty? ? @opts.arguments : nil
   end
 
@@ -21,9 +24,12 @@ class WatchCommand
 
   def parse_args(args)
     opts = Slop.parse args do |o|
-      o.string '-a', '--action', 'action triggered on detection'
+      o.string '-a', '--action', 'action triggered on detection', required: true
       o.int '-d', '--duration', 'action time delay in flicks', default: 0
-      o.bool '-h', '--help'
+      o.on '-h', '--help' do
+        puts USAGE
+        exit
+      end
     end
 
     opts.arguments.shift
