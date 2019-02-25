@@ -12,7 +12,8 @@ class WatchCommand
   def initialize(input)
     @opts = parse_args(input)
     @opts.options.banner = self.class::USAGE
-    @files = !@opts.arguments.empty? ? @opts.arguments : nil
+    @files = @opts[:files]
+    @action = !@opts.arguments.empty? ? @opts.arguments.join(" ") : nil
   end
 
   def nil_or_help?
@@ -21,7 +22,7 @@ class WatchCommand
 
   def parse_args(args)
     opts = Slop.parse args do |o|
-      o.string '-a', '--action', 'action triggered on detection', default: "date"
+      o.array '-f', '--files', 'files to watch', delimiter: ','
       o.int '-d', '--duration', 'action time delay in flicks', default: 0
       o.bool '-v', '--verbose', 'display file that triggered the action', default: true
       o.on '-h', '--help' do
@@ -34,7 +35,6 @@ class WatchCommand
   end
 
   def execute_action(file)
-    action = @opts[:action]
     duration = @opts[:duration]
     verbose = @opts.verbose?
 
@@ -43,7 +43,7 @@ class WatchCommand
       TimeUtil::delay_flicks(duration)
       puts "WATCH TRIGGERED: #{File.basename(file)}" if verbose
 
-      sub_shell = Cmd.new(ListReader.new([action]), nil)
+      sub_shell = Cmd.new(ListReader.new([@action]), nil)
       sub_shell.cmd_loop
     end
   end
