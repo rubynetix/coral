@@ -1,8 +1,7 @@
 require_relative 'base_command'
-require_relative '../timer/timer'
+require_relative 'delay_command'
 
 class WatchCommand
-  include Timer
   include BaseCommand
 
   USAGE = ''.freeze
