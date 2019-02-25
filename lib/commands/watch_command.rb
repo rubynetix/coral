@@ -4,6 +4,8 @@ require_relative 'delay_command'
 class WatchCommand
   include BaseCommand
 
+  attr_reader(:opts)
+
   USAGE = ''.freeze
 
   def initialize(input)
@@ -20,10 +22,10 @@ class WatchCommand
     false
   end
 
-  def parse_args(input)
-    opts = Slop.parse do |o|
-      o.string '-a', '--action', 'action tiggered on detection', required: true
-      o.integer '-d', '--duration', 'action time delay in flicks', default: 0
+  def parse_args(args)
+    opts = Slop.parse args do |o|
+      o.string '-a', '--action', 'action triggered on detection', required: true
+      o.int '-d', '--duration', 'action time delay in flicks', default: 0
       o.on '-h', '--help' do
         puts USAGE
         exit
