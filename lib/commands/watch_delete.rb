@@ -3,7 +3,7 @@ require_relative 'watch_command'
 class WatchDelete < WatchCommand
 
   USAGE = <<~EOS.freeze
-    Usage: watch_delete
+    Usage: watch_delete [action] [duration] [filenames]
       ...
 
     [options]
@@ -14,7 +14,14 @@ class WatchDelete < WatchCommand
   end
 
   def check_for_deletions
-    # TODO
+    until @files.empty?
+      @files.each do |file|
+        next unless !File.exist?(file)
+
+        @files.pop(file)
+        execute_change_action
+      end
+    end
   end
 
   def execute
