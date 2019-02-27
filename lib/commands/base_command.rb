@@ -14,6 +14,6 @@ module BaseCommand
   end
 
   def term_columns
-    ENV['COLUMNS'].to_i yie
+    ENV['COLUMNS'].to_i
   end
 end
