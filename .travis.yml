@@ -1,6 +1,6 @@
 language: ruby
-sudo: true
-dist: trusty
+sudo: false # note: it's required, not true, if switching
+dist: xenial
 
 notifications:
   email: false
