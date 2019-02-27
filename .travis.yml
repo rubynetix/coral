@@ -1,5 +1,5 @@
 language: ruby
-sudo: false
+sudo: false # note: it's required, not true, if switching
 dist: xenial
 
 notifications:
